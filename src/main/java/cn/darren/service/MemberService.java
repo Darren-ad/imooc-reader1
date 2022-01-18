@@ -12,4 +12,13 @@ public interface MemberService {
      * @return  新会员对象
      */
     public Member createMember(String username, String password, String nickname);
+
+    /**
+     * 登录检查
+     * 
+     * @param username 用户名
+     * @param password 密码
+     * @return 登录对象
+     */
+    public Member checkLogin(String username, String password);
 }

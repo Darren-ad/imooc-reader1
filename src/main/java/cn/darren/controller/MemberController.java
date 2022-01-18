@@ -1,5 +1,6 @@
 package cn.darren.controller;
 
+import cn.darren.entity.Member;
 import cn.darren.exception.BussinessException;
 import cn.darren.service.MemberService;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +42,35 @@ public class MemberController {
                 result.put("code", "0");
                 result.put("msg", "success");
             } catch (BussinessException ex) {
+                result.put("code", ex.getCode());
+                result.put("msg", ex.getMsg());
+            }
+        }
+        return result;
+    }
+    
+    @GetMapping("/login.html")
+    public ModelAndView showLogin(){
+        return new ModelAndView("/login");
+    }
+    
+    @PostMapping("/check_login")
+    @ResponseBody
+    public Map checkLogin(String username, String password, String vc, HttpSession session){
+        //正确验证码
+        String verifyCode = (String)session.getAttribute("kaptchaVerifyCode");
+        //验证码比对
+        Map result = new HashMap();
+        if(vc == null || verifyCode == null || !vc.equalsIgnoreCase(verifyCode)){
+            result.put("code", "VC01");
+            result.put("msg", "验证码错误");
+        }else{
+            try{
+                Member member = memberService.checkLogin(username, password);
+                session.setAttribute("loginMember", member);
+                result.put("code", "0");
+                result.put("msg", "success");
+            }catch (BussinessException ex){
                 result.put("code", ex.getCode());
                 result.put("msg", ex.getMsg());
             }
