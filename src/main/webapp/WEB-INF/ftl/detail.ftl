@@ -50,6 +50,12 @@
         $(function () {
             $(".stars").raty({readOnly: true});
         })
+        $(function (){
+            <#if memberReadState ??>
+            //属性选择器：*代表所有的标签；[]方括号里代表对应的属性；
+                $("*[data-read-state='${memberReadState.readState}']").addClass("highlight");
+            </#if>
+        })
     </script>
 </head>
 <body>

@@ -1,11 +1,11 @@
 package cn.darren.controller;
 
-import cn.darren.entity.Book;
-import cn.darren.entity.Category;
-import cn.darren.entity.Evaluation;
+import cn.darren.entity.*;
+import cn.darren.mapper.MemberMapper;
 import cn.darren.service.BookService;
 import cn.darren.service.CategoryService;
 import cn.darren.service.EvaluationService;
+import cn.darren.service.MemberService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -25,6 +26,8 @@ public class BookController {
     private BookService bookService;
     @Resource
     private EvaluationService evaluationService;
+    @Resource
+    private MemberService memberService;
 
     @GetMapping("/")
     public ModelAndView showIndex(){
@@ -57,10 +60,16 @@ public class BookController {
      * @return
      */
     @GetMapping("/book/{id}")
-    public ModelAndView showDetail(@PathVariable("id") Long id){
+    public ModelAndView showDetail(@PathVariable("id") Long id, HttpSession session){
         Book book = bookService.selectById(id);
         List<Evaluation> evaluationList = evaluationService.selectByBookId(id);
         ModelAndView modelAndView = new ModelAndView("/detail");
+        Member member = (Member) session.getAttribute("loginMember");
+        if(member != null){
+            //获取会员阅读状态
+            MemberReadState memberReadState = memberService.selectMemberReadState(member.getMemberId(), id);
+            modelAndView.addObject("memberReadState", memberReadState);
+        }
         modelAndView.addObject("book", book);
         modelAndView.addObject("evaluationList", evaluationList);
         return modelAndView;

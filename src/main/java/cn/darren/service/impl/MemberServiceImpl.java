@@ -1,8 +1,10 @@
 package cn.darren.service.impl;
 
 import cn.darren.entity.Member;
+import cn.darren.entity.MemberReadState;
 import cn.darren.exception.BussinessException;
 import cn.darren.mapper.MemberMapper;
+import cn.darren.mapper.MemberReadStateMapper;
 import cn.darren.service.MemberService;
 import cn.darren.utils.MD5Utils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +22,8 @@ public class MemberServiceImpl implements MemberService {
     
     @Resource
     private MemberMapper memberMapper;
+    @Resource
+    private MemberReadStateMapper memberReadStateMapper;
     
     /**
      * 会员注册，创建新会员
@@ -75,5 +79,21 @@ public class MemberServiceImpl implements MemberService {
             throw new BussinessException("M03", "输入密码有误");
         }
         return member;
+    }
+
+    /**
+     * 获取阅读状态
+     *
+     * @param memberId 会员编号
+     * @param bookId   图书编号
+     * @return 阅读状态对象
+     */
+    @Override
+    public MemberReadState selectMemberReadState(Long memberId, Long bookId) {
+        QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<MemberReadState>();
+        queryWrapper.eq("book_id", bookId);
+        queryWrapper.eq("member_id", memberId);
+        MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        return memberReadState;
     }
 }
