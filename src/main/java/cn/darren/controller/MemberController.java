@@ -1,5 +1,6 @@
 package cn.darren.controller;
 
+import cn.darren.entity.Evaluation;
 import cn.darren.entity.Member;
 import cn.darren.exception.BussinessException;
 import cn.darren.service.MemberService;
@@ -116,6 +117,28 @@ public class MemberController {
             memberService.evaluate(memberId, bookId, score, content);
             result.put("code", "0");
             result.put("msg", "success");
+        }catch (BussinessException ex){
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
+
+
+    /**
+     * 短评点赞
+     * @param evaluationId 短评编号
+     * @return 处理结果
+     */
+    @PostMapping("/enjoy")
+    @ResponseBody
+    public Map evaluate(Long evaluationId){
+        Map result = new HashMap();
+        try{
+            Evaluation evaluation = memberService.enjoy(evaluationId);
+            result.put("code", "0");
+            result.put("msg", "success");
+            result.put("Evaluation", evaluation);
         }catch (BussinessException ex){
             result.put("code", ex.getCode());
             result.put("msg", ex.getMsg());

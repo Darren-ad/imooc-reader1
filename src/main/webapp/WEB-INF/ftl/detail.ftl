@@ -117,6 +117,23 @@
                         "json"
                     )
                 })
+            
+                //短评点赞
+                $("*[data-evaluation-id]").click(function (){
+                    var evaluationId = $(this).data("evaluation-id");
+                    $.post(
+                        "/enjoy",
+                        {
+                            evaluationId:evaluationId
+                        },
+                        function (json){
+                            if (json.code == 0){
+                                $("*[data-evaluation-id='"+ evaluationId +"'] span").text(json.Evaluation.enjoy);
+                            }
+                        },
+                        "json"
+                    )
+                })
             </#if>
             
         })

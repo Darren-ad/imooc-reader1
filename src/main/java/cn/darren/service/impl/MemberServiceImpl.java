@@ -154,4 +154,18 @@ public class MemberServiceImpl implements MemberService {
         evaluationMapper.insert(evaluation);
         return evaluation;
     }
+
+    /**
+     * 短评点赞
+     *
+     * @param evaluationId 短评编号
+     * @return 短评对象
+     */
+    @Override
+    public Evaluation enjoy(Long evaluationId) {
+        Evaluation evaluation = evaluationMapper.selectById(evaluationId);
+        evaluation.setEnjoy(evaluation.getEnjoy() + 1);
+        evaluationMapper.updateById(evaluation);
+        return evaluation;
+    }
 }
