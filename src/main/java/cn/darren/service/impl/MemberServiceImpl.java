@@ -9,6 +9,7 @@ import cn.darren.service.MemberService;
 import cn.darren.utils.MD5Utils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service("memberService")
-@Transactional
+@Transactional      //此注解默认把类中的方法都开启事务
 public class MemberServiceImpl implements MemberService {
     
     @Resource
@@ -89,11 +90,41 @@ public class MemberServiceImpl implements MemberService {
      * @return 阅读状态对象
      */
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)    //告诉Spring，当前方法不需要开启事务
     public MemberReadState selectMemberReadState(Long memberId, Long bookId) {
         QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<MemberReadState>();
         queryWrapper.eq("book_id", bookId);
         queryWrapper.eq("member_id", memberId);
         MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        return memberReadState;
+    }
+
+    /**
+     * 更新阅读状态
+     *
+     * @param memberId  会员编号
+     * @param bookId    图书编号
+     * @param readState 阅读状态
+     * @return 阅读状态对象
+     */
+    @Override
+    public MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState) {
+        QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<MemberReadState>();
+        queryWrapper.eq("member_id", memberId);
+        queryWrapper.eq("book_id", bookId);
+        MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        //无则新增，有则更新
+        if(memberReadState == null){
+            memberReadState = new MemberReadState();
+            memberReadState.setMemberId(memberId);
+            memberReadState.setBookId(bookId);
+            memberReadState.setReadState(readState);
+            memberReadState.setCreateTime(new Date());
+            memberReadStateMapper.insert(memberReadState);
+        }else{
+            memberReadState.setReadState(readState);
+            memberReadStateMapper.updateById(memberReadState);
+        }
         return memberReadState;
     }
 }

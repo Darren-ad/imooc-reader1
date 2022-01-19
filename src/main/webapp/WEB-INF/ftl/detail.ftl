@@ -52,8 +52,44 @@
         })
         $(function (){
             <#if memberReadState ??>
+            //重选阅读状态
             //属性选择器：*代表所有的标签；[]方括号里代表对应的属性；
                 $("*[data-read-state='${memberReadState.readState}']").addClass("highlight");
+            </#if>
+            <#if !loginMember ??>
+                $("*[data-read-state], #btnEvaluation, *[data-evaluation-id]").click(function (){
+                    //未登录情况下点击想看/看过提示”需要登录“
+                    $("#exampleModalCenter").modal("show");
+                })
+                //下面两个可以合并为上面一个
+                // $("#btnEvaluation").click(function (){
+                //     //未登录情况下点击写短评提示”需要登录“
+                //     $("#exampleModalCenter").modal("show");
+                // })
+                // $("*[data-evaluation-id]").click(function (){
+                //     //未登录情况下给评论点赞提示”需要登录“
+                //     $("#exampleModalCenter").modal("show");
+                // })
+            </#if>
+            <#if loginMember ??>
+                $("*[data-read-state]").click(function (){
+                    var readState = $(this).data("read-state");
+                    $.post(
+                        "/update_read_state",
+                        {
+                            memberId:${loginMember.memberId},
+                            bookId:${book.bookId},
+                            readState:readState
+                        },
+                        function (json){
+                            if(json.code == "0"){
+                                $("*[data-read-state]").removeClass("highlight");
+                                $("*[data-read-state='"+ readState +"']").addClass("highlight");
+                            }
+                        },
+                        "json"
+                    )
+                })
             </#if>
         })
     </script>
