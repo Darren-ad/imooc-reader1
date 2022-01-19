@@ -1,5 +1,6 @@
 package cn.darren.service;
 
+import cn.darren.entity.Evaluation;
 import cn.darren.entity.Member;
 import cn.darren.entity.MemberReadState;
 
@@ -39,4 +40,14 @@ public interface MemberService {
      * @return  阅读状态对象
      */
     public MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState);
+
+    /**
+     * 写短评
+     * @param memberId 会员编号
+     * @param bookId 图书编号
+     * @param score 评分
+     * @param content 评论内容
+     * @return  评论对象
+     */
+    public Evaluation evaluate(Long memberId, Long bookId, Integer score, String content);
 }

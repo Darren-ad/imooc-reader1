@@ -1,8 +1,10 @@
 package cn.darren.service.impl;
 
+import cn.darren.entity.Evaluation;
 import cn.darren.entity.Member;
 import cn.darren.entity.MemberReadState;
 import cn.darren.exception.BussinessException;
+import cn.darren.mapper.EvaluationMapper;
 import cn.darren.mapper.MemberMapper;
 import cn.darren.mapper.MemberReadStateMapper;
 import cn.darren.service.MemberService;
@@ -25,6 +27,8 @@ public class MemberServiceImpl implements MemberService {
     private MemberMapper memberMapper;
     @Resource
     private MemberReadStateMapper memberReadStateMapper;
+    @Resource
+    private EvaluationMapper evaluationMapper;
     
     /**
      * 会员注册，创建新会员
@@ -126,5 +130,28 @@ public class MemberServiceImpl implements MemberService {
             memberReadStateMapper.updateById(memberReadState);
         }
         return memberReadState;
+    }
+
+    /**
+     * 写短评
+     *
+     * @param memberId 会员编号
+     * @param bookId   图书编号
+     * @param score    评分
+     * @param content  评论内容
+     * @return 评论对象
+     */
+    @Override
+    public Evaluation evaluate(Long memberId, Long bookId, Integer score, String content) {
+        Evaluation evaluation = new Evaluation();
+        evaluation.setMemberId(memberId);
+        evaluation.setBookId(bookId);
+        evaluation.setScore(score);
+        evaluation.setContent(content);
+        evaluation.setCreateTime(new Date());
+        evaluation.setEnjoy(0);
+        evaluation.setState("enable");
+        evaluationMapper.insert(evaluation);
+        return evaluation;
     }
 }

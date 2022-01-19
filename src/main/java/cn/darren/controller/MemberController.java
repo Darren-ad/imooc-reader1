@@ -99,4 +99,27 @@ public class MemberController {
         }
         return result;
     }
+
+    /**
+     * 写短评
+     * @param memberId 会员编号
+     * @param bookId 图书编号
+     * @param score 评分
+     * @param content 短评内容
+     * @return 处理结果
+     */
+    @PostMapping("/evaluate")
+    @ResponseBody
+    public Map evaluate(Long memberId, Long bookId, Integer score, String content){
+        Map result = new HashMap();
+        try{
+            memberService.evaluate(memberId, bookId, score, content);
+            result.put("code", "0");
+            result.put("msg", "success");
+        }catch (BussinessException ex){
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
 }

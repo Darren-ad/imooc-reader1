@@ -90,7 +90,35 @@
                         "json"
                     )
                 })
+                 $("#btnEvaluation").click(function (){
+                     $("#score").raty("")//转换为星型组件
+                     $("#dlgEvaluation").modal("show");//显示短评对话框
+                 })
+                //评论对话框提交数据
+                $("#btnSubmit").click(function (){
+                    var score = $("#score").raty("score");//获取评分
+                    var content = $("#content").val();
+                    if(score == 0 || $.trim(content) == ""){
+                        return;
+                    }
+                    $.post(
+                        "/evaluate",
+                        {
+                            memberId:${loginMember.memberId},
+                            bookId:${book.bookId},
+                            score:score,
+                            content:content
+                        },
+                        function (json){
+                            if(json.code == "0"){
+                                window.location.reload();//刷新当前页面
+                            }
+                        },
+                        "json"
+                    )
+                })
             </#if>
+            
         })
     </script>
 </head>
@@ -207,7 +235,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <h6>为"从 0 开始学爬虫"写短评</h6>
+                <h6>为"${book.bookName}"写短评</h6>
                 <form id="frmEvaluation">
                     <div class="input-group  mt-2 ">
                         <span id="score"></span>
