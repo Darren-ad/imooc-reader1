@@ -29,4 +29,11 @@ public interface BookService {
      * 更新图书评分/评价数量
      */
     public void updateEvaluation();
+
+    /**
+     * 创建新的图书
+     * @param book
+     * @return
+     */
+    public Book createBook(Book book); 
 }

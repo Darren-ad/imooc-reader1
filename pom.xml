@@ -129,6 +129,13 @@
           <artifactId>commons-fileupload</artifactId>
           <version>1.4</version>
       </dependency>
+      
+      <!--Jsoup HTML解析组件-->
+      <dependency>
+          <groupId>org.jsoup</groupId>
+          <artifactId>jsoup</artifactId>
+          <version>1.12.1</version>
+      </dependency>
   </dependencies>
 
   <build>

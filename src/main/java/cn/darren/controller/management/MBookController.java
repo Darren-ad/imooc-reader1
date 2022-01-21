@@ -1,10 +1,17 @@
 package cn.darren.controller.management;
 
+import cn.darren.entity.Book;
+import cn.darren.exception.BussinessException;
+import cn.darren.service.BookService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +24,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/management/book")
 public class MBookController {
+    
+    @Resource
+    private BookService bookService;
     
     @GetMapping("/index.html")
     public ModelAndView showBook(){
@@ -46,5 +56,31 @@ public class MBookController {
         result.put("data", new String[]{"/upload/" + fileName + suffix});
         return result;
     }
-    
+
+    /**
+     * 新增图书
+     * @param book
+     * @return
+     */
+    @PostMapping("/create")
+    @ResponseBody
+    public Map createBook(Book book){
+        Map result = new HashMap();
+        try {
+            book.setEvaluationQuantity(0);
+            book.setEvaluationScore(0f);
+            Document doc = Jsoup.parse(book.getDescription());//解析图书详情
+            Element img = doc.select("img").first();//获取图书详情第一图的元素对象
+            String cover = img.attr("src");//来自于description描述的第一幅图
+            book.setCover(cover);
+            bookService.createBook(book);
+            result.put("code", "0");
+            result.put("msg", "success");
+        } catch (BussinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
 }

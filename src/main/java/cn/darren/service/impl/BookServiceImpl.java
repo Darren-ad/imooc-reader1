@@ -65,4 +65,17 @@ public class BookServiceImpl implements BookService {
     public void updateEvaluation() {
         bookMapper.updateEvaluation();
     }
+
+    /**
+     * 创建新的图书
+     *
+     * @param book
+     * @return
+     */
+    @Override
+    @Transactional
+    public Book createBook(Book book) {
+        bookMapper.insert(book);//在插入成功后，由于主键是自增的，在执行完insert以后，由Mybatis-Plus会将编号自动的回填到book中
+        return book;
+    }
 }
