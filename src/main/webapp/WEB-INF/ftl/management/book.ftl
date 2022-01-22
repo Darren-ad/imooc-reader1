@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="referrer" content="never">
     <title>图书管理功能</title>
     <style>
         #dlgBook{

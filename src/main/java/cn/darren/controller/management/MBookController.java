@@ -102,4 +102,46 @@ public class MBookController {
         result.put("count", pageObject.getTotal());//未分页时记录总数
         return result;
     }
+    
+    @GetMapping("/id/{id}")//{id}是路径变量
+    @ResponseBody
+    public Map selectById(@PathVariable("id") Long bookId){
+        Book book = bookService.selectById(bookId);
+        Map result = new HashMap();
+        result.put("code", "0");
+        result.put("msg", "success");
+        result.put("data", book);
+        return result;
+    }
+
+    /**
+     * 更新图书数据
+     * @param book
+     * @return
+     */
+    @PostMapping("/update")
+    @ResponseBody
+    public Map updateBook(Book book){
+        //在实际开发时，遇到更新操作，第一反应是先查询原始的数据，再原始数据的基础上对相应属性进行调整
+        Map result = new HashMap();
+        try {
+            Book rawBook = bookService.selectById(book.getBookId());
+            rawBook.setBookName(book.getBookName());
+            rawBook.setAuthor(book.getAuthor());
+            rawBook.setCategoryId(book.getCategoryId());
+            rawBook.setSubTitle(book.getSubTitle());
+            rawBook.setDescription(book.getDescription());
+            Document doc = Jsoup.parse(book.getDescription());
+            String cover = doc.select("img").first().attr("src");
+            rawBook.setCover(cover);
+            bookService.updateBook(rawBook);
+            result.put("code", "0");
+            result.put("msg", "success");
+        } catch (BussinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
 }

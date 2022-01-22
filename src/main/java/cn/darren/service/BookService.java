@@ -35,5 +35,12 @@ public interface BookService {
      * @param book
      * @return
      */
-    public Book createBook(Book book); 
+    public Book createBook(Book book);
+
+    /**
+     * 更新图书
+     * @param book 新图书数据
+     * @return  更新后的数据
+     */
+    public Book updateBook(Book book);
 }

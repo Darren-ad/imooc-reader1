@@ -78,4 +78,17 @@ public class BookServiceImpl implements BookService {
         bookMapper.insert(book);//在插入成功后，由于主键是自增的，在执行完insert以后，由Mybatis-Plus会将编号自动的回填到book中
         return book;
     }
+
+    /**
+     * 更新图书
+     *
+     * @param book 新图书数据
+     * @return 更新后的数据
+     */
+    @Override
+    @Transactional
+    public Book updateBook(Book book) {
+         bookMapper.updateById(book);
+        return book;
+    }
 }
