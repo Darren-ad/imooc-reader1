@@ -3,6 +3,7 @@ package cn.darren.controller.management;
 import cn.darren.entity.Book;
 import cn.darren.exception.BussinessException;
 import cn.darren.service.BookService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -81,6 +82,24 @@ public class MBookController {
             result.put("code", ex.getCode());
             result.put("msg", ex.getMsg());
         }
+        return result;
+    }
+    
+    @GetMapping("/list")
+    @ResponseBody
+    public Map list(Integer page, Integer limit){
+        if(page == null){
+            page = 1;
+        }
+        if(limit == null){
+            limit = 10;
+        }
+        IPage<Book> pageObject = bookService.paging(null, null, page, limit);
+        Map result = new HashMap();
+        result.put("code", "0");
+        result.put("msg", "success");
+        result.put("data", pageObject.getRecords());//当前页面数据
+        result.put("count", pageObject.getTotal());//未分页时记录总数
         return result;
     }
 }
