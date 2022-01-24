@@ -144,7 +144,12 @@ public class MBookController {
         }
         return result;
     }
-    
+
+    /**
+     * 删除图书及相关数据
+     * @param bookId 图书编号
+     * @return
+     */
     @GetMapping("/delete/{id}")
     @ResponseBody
     public Map deleteBook(@PathVariable("id") Long bookId){
