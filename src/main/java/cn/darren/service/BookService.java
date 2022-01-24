@@ -43,4 +43,10 @@ public interface BookService {
      * @return  更新后的数据
      */
     public Book updateBook(Book book);
+
+    /**
+     * 删除图书及相关数据
+     * @param bookId 图书编号
+     */
+    public void deleteBook(Long bookId);
 }

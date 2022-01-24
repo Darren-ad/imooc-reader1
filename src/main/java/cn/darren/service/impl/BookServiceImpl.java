@@ -1,7 +1,11 @@
 package cn.darren.service.impl;
 
 import cn.darren.entity.Book;
+import cn.darren.entity.Evaluation;
+import cn.darren.entity.MemberReadState;
 import cn.darren.mapper.BookMapper;
+import cn.darren.mapper.EvaluationMapper;
+import cn.darren.mapper.MemberReadStateMapper;
 import cn.darren.service.BookService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,6 +22,10 @@ public class BookServiceImpl implements BookService {
 
     @Resource
     private BookMapper bookMapper;
+    @Resource
+    private MemberReadStateMapper memberReadStateMapper;
+    @Resource
+    private EvaluationMapper evaluationMapper;
     
     /**
      * 分页查询图书
@@ -90,5 +98,22 @@ public class BookServiceImpl implements BookService {
     public Book updateBook(Book book) {
          bookMapper.updateById(book);
         return book;
+    }
+
+    /**
+     * 删除图书及相关数据
+     *
+     * @param bookId 图书编号
+     */
+    @Override
+    @Transactional
+    public void deleteBook(Long bookId) {
+        bookMapper.deleteById(bookId);
+        QueryWrapper<MemberReadState> memberReadStateQueryWrapper = new QueryWrapper<>();
+        memberReadStateQueryWrapper.eq("book_id",bookId);
+        memberReadStateMapper.delete(memberReadStateQueryWrapper);
+        QueryWrapper<Evaluation> evaluationQueryWrapper = new QueryWrapper<>();
+        evaluationQueryWrapper.eq("book_id", bookId);
+        evaluationMapper.delete(evaluationQueryWrapper);
     }
 }
